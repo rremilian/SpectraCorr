@@ -4,6 +4,9 @@ class OrcaParser:
     def __init__(self):
         pass
     def parse_spectral_data(self, hess_file, stype):
+        if stype not in ['ir', 'raman']:
+            raise ValueError(f"Invalid spectrum type: {stype}. Must be 'ir' or 'raman'")
+        
         with open(hess_file, 'r') as f:
             lines = f.readlines()
             lines = [line.strip() for line in lines]
