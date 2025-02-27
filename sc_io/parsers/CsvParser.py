@@ -4,7 +4,7 @@ import numpy as np
 class CsvParser:
     def __init__(self):
         pass
-    def parse_spectral_data(self, csv_file, stype, freq_column = 0, int_column = 1):
+    def parse_spectral_data(self, csv_file, freq_column = 0, int_column = 1):
         with open(csv_file, 'r') as file:
             reader = csv.reader(file)
             next(reader)  # Skip header row
