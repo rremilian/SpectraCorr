@@ -4,7 +4,7 @@ import numpy as np
 class CsvParser:
     def __init__(self):
         pass
-    def parse_spectral_data(self, csv_file, freq_column, int_column, stype):
+    def parse_spectral_data(self, csv_file, stype, freq_column = 0, int_column = 1):
         with open(csv_file, 'r') as file:
             reader = csv.reader(file)
             next(reader)  # Skip header row
@@ -16,8 +16,10 @@ class CsvParser:
                     intensity = float(row[int_column])
                     frequencies.append(freq)
                     intensities.append(intensity)
-                except (ValueError, IndexError):
-                    raise("There was an error when parsing the CSV file.")
+                except ValueError:
+                    raise ValueError(f"Could not convert value to float in row {reader.line_num}: {row}")
+                except IndexError:
+                    raise IndexError(f"Column index out of range for row {reader.line_num}.")
         frequencies = np.array(frequencies)
         intensities = np.array(intensities)
 
