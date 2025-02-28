@@ -1,6 +1,5 @@
 import numpy as np
-import os
-from core.spectrum import Spectrum
+from core.Spectrum import Spectrum
 
 
 class BaseGenerator:
