@@ -1,5 +1,4 @@
-from sc_io.parsers.CsvParser import CsvParser
-from sc_io.parsers.OrcaParser import OrcaParser
+from sc_io.parsers import CsvParser, OrcaParser
 
 class SpectraCorr:
     def __init__(self):
@@ -15,5 +14,6 @@ class SpectraCorr:
                                                    int_column=int_column)
         return spectral_data
     def initSpectrum(self, frequencies, intensities, stype):
-        from core.spectrum import Spectrum
+        from core.Spectrum import Spectrum
         return Spectrum.initialize(frequencies, intensities, stype)
+    def generateSpectrum(self, )
