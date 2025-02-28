@@ -1,19 +1,32 @@
 from sc_io.parsers.CsvParser import CsvParser
 from sc_io.parsers.OrcaParser import OrcaParser
+from core.Spectrum import Spectrum
+from generators.GaussianGenerator import GaussianGenerator
+from generators.LorentzianGenerator import LorentzianGenerator
 
-class SpectraCorr:
-    def __init__(self):
-        pass
-    def parseOrca(self, hess_file, stype):
-        parser = OrcaParser()
-        spectral_data = parser.parse_spectral_data(hess_file, stype)
-        return spectral_data
-    def parseCsv(self, csv_file, stype, freq_column = 0, int_column = 0):
-        parser = CsvParser()
-        spectral_data = parser.parse_spectral_data(csv_file, stype, 
-                                                   freq_column=freq_column, 
-                                                   int_column=int_column)
-        return spectral_data
-    def initSpectrum(self, frequencies, intensities, stype):
-        from core.spectrum import Spectrum
-        return Spectrum.initialize(frequencies, intensities, stype)
+def parseOrca(hess_file, stype):
+    parser = OrcaParser()
+    spectral_data = parser.parse_spectral_data(hess_file, stype)
+    return spectral_data
+
+def parseCsv(csv_file, freq_column = 0, int_column = 1):
+    parser = CsvParser()
+    spectral_data = parser.parse_spectral_data(csv_file, 
+                                                freq_column=freq_column, 
+                                                int_column=int_column)
+    return spectral_data
+
+def initSpectrum(frequencies, intensities, stype):  
+    return Spectrum.initialize(frequencies, intensities, stype)
+
+def generateSpectrum(freqlist, intlist, fmin, fmax, step, sigma, dist, stype):
+    if dist not in ["gaussian", "lorentzian"]:
+        raise ValueError("Variable 'dist' must be 'gaussian' or 'lorentzian'.")
+    if dist == "gaussian":
+        generator = GaussianGenerator.initialize(freqlist, intlist, fmin, fmax, step, sigma)
+        spectrum = generator.generate_spectrum(stype)
+    else:
+        generator = LorentzianGenerator.initialize(freqlist, intlist, fmin, fmax, step, sigma)
+        spectrum = generator.generate_spectrum(stype)
+    return spectrum
+    
