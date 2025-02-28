@@ -29,4 +29,3 @@ def generateSpectrum(freqlist, intlist, fmin, fmax, step, sigma, dist, stype):
         generator = LorentzianGenerator.initialize(freqlist, intlist, fmin, fmax, step, sigma)
         spectrum = generator.generate_spectrum(stype)
     return spectrum
-    
