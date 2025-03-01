@@ -1,5 +1,6 @@
 import numpy as np
 import scipy as sp
+import matplotlib.pyplot as plt
 
 class Spectrum:
     def __init__(self, stype, frequencies, intensities, labels=None):
@@ -45,3 +46,28 @@ class Spectrum:
         if not isinstance(self.labels, dict):
             self.labels = {}
         self.labels[key] = value
+
+    def find_peaks(self, height=None, distance=None, prominence=None, plot=False):
+        peaks, properties = sp.signal.find_peaks(self.intensities,
+                                                 height=height,
+                                                 distance=distance,
+                                                 prominence=prominence)
+        for index, peak in enumerate(peaks):
+            print(f"Peak #{index + 1} - Freq: {self.frequencies[peak]} cm^-1 | Int: {self.intensities[peak]:.5f}")
+
+        return peaks, properties
+
+    def plot(self,peaks=None):
+        plt.plot(self.frequencies, self.intensities)
+        plt.xlabel("Frequency (cm^-1)")
+        plt.ylabel("Intensity")
+        if isinstance(peaks, np.ndarray):
+            plt.scatter(self.frequencies[peaks], self.intensities[peaks], color='red', marker='o', label='Peaks')
+            for peak in peaks:
+                plt.text(self.frequencies[peak],
+                         self.intensities[peak] + 0.01,
+                         f'{self.frequencies[peak]:.0f}',
+                         ha='center',
+                         va='bottom',
+                         fontsize=9)
+        plt.show()

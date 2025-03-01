@@ -13,6 +13,7 @@ class BaseGenerator:
         self.intensities = []
         for i in range(self.nstep):
             self.frequencies.append(self.fmin + i * self.step)
+        self.frequencies = np.array(self.frequencies)
 
     @classmethod
     def initialize(cls, fmin, fmax, step, sigma):
@@ -38,8 +39,9 @@ class BaseGenerator:
     def generate_spectrum(self, freqlist, intlist, stype):
         if not isinstance(freqlist, np.ndarray) or not isinstance(intlist, np.ndarray):
             raise ValueError("The variables 'freqlist' and 'intlist' must be numpy arrays.")
-        temp = np.empty((self.nstep, len(self.freqlist)))
-        for i in range(len(self.freqlist)):
-            temp[:,i] = self.intlist[i] * self.distribution_function(self.freqlist[i], self.sigma, np.asarray(self.frequencies))
+        temp = np.empty((self.nstep, len(freqlist)))
+        for i in range(len(freqlist)):
+            temp[:,i] = intlist[i] * self.distribution_function(freqlist[i], self.sigma, np.asarray(self.frequencies))
         self.intensities = np.sum(temp, axis=1, dtype=float)
+
         return Spectrum.initialize(self.frequencies, self.intensities, stype)

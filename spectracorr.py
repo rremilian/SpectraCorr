@@ -19,13 +19,11 @@ def parseCsv(csv_file, freq_column = 0, int_column = 1):
 def initSpectrum(frequencies, intensities, stype):  
     return Spectrum.initialize(frequencies, intensities, stype)
 
-def generateSpectrum(freqlist, intlist, fmin, fmax, step, sigma, dist, stype):
+def initGenerator(fmin, fmax, step, sigma, dist):
     if dist not in ["gaussian", "lorentzian"]:
         raise ValueError("Variable 'dist' must be 'gaussian' or 'lorentzian'.")
     if dist == "gaussian":
-        generator = GaussianGenerator.initialize(freqlist, intlist, fmin, fmax, step, sigma)
-        spectrum = generator.generate_spectrum(stype)
+        generator = GaussianGenerator.initialize(fmin, fmax, step, sigma)
     else:
-        generator = LorentzianGenerator.initialize(freqlist, intlist, fmin, fmax, step, sigma)
-        spectrum = generator.generate_spectrum(stype)
-    return spectrum
+        generator = LorentzianGenerator.initialize(fmin, fmax, step, sigma)
+    return generator
