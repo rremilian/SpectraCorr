@@ -3,9 +3,7 @@ from core.Spectrum import Spectrum
 
 
 class BaseGenerator:
-    def __init__(self, freqlist, intlist, fmin, fmax, step, sigma):
-        self.freqlist = freqlist
-        self.intlist = intlist
+    def __init__(self, fmin, fmax, step, sigma):
         self.fmin = fmin
         self.fmax = fmax
         self.step = step
@@ -17,9 +15,8 @@ class BaseGenerator:
             self.frequencies.append(self.fmin + i * self.step)
 
     @classmethod
-    def initialize(cls, freqlist, intlist, fmin, fmax, step, sigma):
-        if not isinstance(freqlist, np.ndarray) or not isinstance(intlist, np.ndarray):
-            raise ValueError("The variables 'freqlist' and 'intlist' must be numpy arrays.")
+    def initialize(cls, fmin, fmax, step, sigma):
+
         if not isinstance(fmin, int) or not isinstance(fmax, int):
             raise ValueError("Varibles 'fmin' and 'fmax' must be integers.")
         if fmax <= fmin:
@@ -33,14 +30,16 @@ class BaseGenerator:
         if not isinstance(step, float):
             raise ValueError("The variable 'step' must be integer.")
         
-        return cls(freqlist, intlist, fmin, fmax, step, sigma)
+        return cls(fmin, fmax, step, sigma)
     
     def distribution_function(self, freq, sigma, x):
         pass
 
-    def generate_spectrum(self, stype):
+    def generate_spectrum(self, freqlist, intlist, stype):
+        if not isinstance(freqlist, np.ndarray) or not isinstance(intlist, np.ndarray):
+            raise ValueError("The variables 'freqlist' and 'intlist' must be numpy arrays.")
         temp = np.empty((self.nstep, len(self.freqlist)))
         for i in range(len(self.freqlist)):
             temp[:,i] = self.intlist[i] * self.distribution_function(self.freqlist[i], self.sigma, np.asarray(self.frequencies))
         self.intensities = np.sum(temp, axis=1, dtype=float)
-        return Spectrum(stype, self.frequencies, self.intensities)
+        return Spectrum.initialize(self.frequencies, self.intensities, stype)
