@@ -1,5 +1,6 @@
 from sc_io.parsers.CsvParser import CsvParser
 from sc_io.parsers.OrcaParser import OrcaParser
+from sc_io.exporters.CsvExporter import CsvExporter
 from core.Spectrum import Spectrum
 from generators.GaussianGenerator import GaussianGenerator
 from generators.LorentzianGenerator import LorentzianGenerator
@@ -27,3 +28,6 @@ def initGenerator(fmin, fmax, step, sigma, dist):
     else:
         generator = LorentzianGenerator.initialize(fmin, fmax, step, sigma)
     return generator
+
+def initCsvExporter(column1_label, column2_label, delimiter):
+    return CsvExporter.initialize(column1_label, column2_label, delimiter)
