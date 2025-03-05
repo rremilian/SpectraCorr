@@ -10,8 +10,8 @@ class CsvExporter:
         self.force = force
 
     @staticmethod
-    def initialize(column1_label, column2_label, delimiter, force=False):
-        if not isinstance(column1_label, str) or not isinstance(column2_label, str):
+    def initialize(freq_label, int_label, delimiter, force=False):
+        if not isinstance(freq_label, str) or not isinstance(int_label, str):
             raise ValueError("Columns labels must be of type str.")
         if not isinstance(delimiter, str):
             raise ValueError("Delimiter variable must be a str.")
@@ -19,7 +19,7 @@ class CsvExporter:
             raise ValueError("Delimiter variable must have exactly one character.")
         if force != True and force != False:
             raise ValueError("Force variable must be either True or False.")
-        return CsvExporter(column1_label, column2_label, delimiter, force)
+        return CsvExporter(freq_label, int_label, delimiter, force)
 
     def export(self, frequencies, intensities, output_path):  # Added missing colon
         if not isinstance(frequencies, (list, tuple, np.ndarray)) or not isinstance(intensities, (list, tuple, np.ndarray)):
