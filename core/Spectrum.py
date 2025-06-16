@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+from scipy.stats import pearsonr, spearmanr
 
 class Spectrum:
     def __init__(self, stype, frequencies, intensities, labels=None):
@@ -47,14 +48,13 @@ class Spectrum:
             self.labels = {}
         self.labels[key] = value
 
-    def find_peaks(self, height=None, distance=None, prominence=None, plot=False):
+    def find_peaks(self, height=None, distance=None, prominence=None):
         peaks, properties = sp.signal.find_peaks(self.intensities,
                                                  height=height,
                                                  distance=distance,
                                                  prominence=prominence)
         for index, peak in enumerate(peaks):
             print(f"Peak #{index + 1} - Freq: {self.frequencies[peak]} cm^-1 | Int: {self.intensities[peak]:.5f}")
-
         return peaks, properties
 
     def plot(self,peaks=None):
@@ -71,3 +71,28 @@ class Spectrum:
                          va='bottom',
                          fontsize=9)
         plt.show()
+
+    def interpolate(self, base_spectrum):
+        if not isinstance(base_spectrum, Spectrum):
+            raise TypeError("Base spectrum must be of type Spectrum.")
+        sorted_indices = np.argsort(self.frequencies)
+        sorted_frequencies = self.frequencies[sorted_indices]
+        sorted_intensities = self.intensities[sorted_indices]
+        interpolated_intensities = np.interp(base_spectrum.frequencies, sorted_frequencies, sorted_intensities)
+        return Spectrum(self.stype, base_spectrum.frequencies, interpolated_intensities)
+
+    @staticmethod
+    def correlate(spectrum1, spectrum2, method='pearson'):
+        if not isinstance(spectrum1, Spectrum) or not isinstance(spectrum2, Spectrum):
+            raise TypeError("Both inputs must be of type Spectrum.")
+        y1 = spectrum1.intensities
+        y2 = spectrum2.intensities
+        if len(y1) != len(y2):
+            raise ValueError("Spectra must have the same number of intensity points.")
+        if method == 'pearson':
+            corr, _ = pearsonr(y1, y2)
+        elif method == 'spearman':
+            corr, _ = spearmanr(y1, y2)
+        else:
+            raise ValueError("Method must be 'pearson' or 'spearman'")
+        return corr
